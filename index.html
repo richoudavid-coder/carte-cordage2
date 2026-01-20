@@ -4,8 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="default">
-    <meta name="apple-mobile-web-app-title" content="Cartes Cordage">
     <title>Cartes Cordage Pro</title>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
@@ -17,309 +15,481 @@
     <div id="root"></div>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <script type="text/babel">
-        const firebaseConfig = {
+        firebase.initializeApp({
             apiKey: "AIzaSyAiaN21dc4giFqIXs73y2FdoWfUY8OMeMc",
             authDomain: "cartes-cordage.firebaseapp.com",
             projectId: "cartes-cordage",
             storageBucket: "cartes-cordage.firebasestorage.app",
             messagingSenderId: "97320852158",
             appId: "1:97320852158:web:0033c473b155f08788dcef"
-        };
-
-        firebase.initializeApp(firebaseConfig);
+        });
         const db = firebase.firestore();
-
         const { useState, useEffect } = React;
-        
-        const Icons = {
-            Users: () => <svg className="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" /></svg>,
-            Plus: () => <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" /></svg>,
-            CreditCard: () => <svg className="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" /></svg>,
-            CheckCircle: () => <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>,
-            Circle: () => <svg className="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" strokeWidth={2} /></svg>,
-            Trash2: () => <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>,
-            Edit2: () => <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>,
-            Save: () => <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4" /></svg>,
-            Search: () => <svg className="w-5 h-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>,
-            Award: () => <svg className="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" /></svg>,
-            Cloud: () => <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z" /></svg>,
-            Download: () => <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>,
-            Upload: () => <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" /></svg>
-        };
-
-        function EditClientForm({ client, onSave, onCancel }) {
-            const [formData, setFormData] = useState({ nom: client.nom, prenom: client.prenom, telephone: client.telephone || '', email: client.email || '' });
-            const handleSubmit = () => { if (!formData.nom || !formData.prenom) { alert('Le nom et prénom sont obligatoires'); return; } onSave(formData); };
-            return (
-                <div className="bg-gradient-to-br from-amber-50 to-orange-50 p-6 rounded-xl border-2 border-amber-300">
-                    <h3 className="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2"><Icons.Edit2 />Modifier le client</h3>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                        <div><label className="block text-sm font-semibold mb-1">Nom *</label><input type="text" value={formData.nom} onChange={(e) => setFormData({...formData, nom: e.target.value})} className="w-full border-2 rounded-lg px-4 py-2" /></div>
-                        <div><label className="block text-sm font-semibold mb-1">Prénom *</label><input type="text" value={formData.prenom} onChange={(e) => setFormData({...formData, prenom: e.target.value})} className="w-full border-2 rounded-lg px-4 py-2" /></div>
-                        <div><label className="block text-sm font-semibold mb-1">Téléphone</label><input type="tel" value={formData.telephone} onChange={(e) => setFormData({...formData, telephone: e.target.value})} className="w-full border-2 rounded-lg px-4 py-2" /></div>
-                        <div><label className="block text-sm font-semibold mb-1">Email</label><input type="email" value={formData.email} onChange={(e) => setFormData({...formData, email: e.target.value})} className="w-full border-2 rounded-lg px-4 py-2" /></div>
-                    </div>
-                    <div className="flex gap-3">
-                        <button onClick={handleSubmit} className="bg-green-600 text-white px-6 py-2 rounded-lg flex items-center gap-2"><Icons.Save />Enregistrer</button>
-                        <button onClick={onCancel} className="bg-gray-300 text-gray-800 px-6 py-2 rounded-lg">Annuler</button>
-                    </div>
-                </div>
-            );
-        }
 
         function App() {
             const [clients, setClients] = useState([]);
             const [showAddForm, setShowAddForm] = useState(false);
             const [searchTerm, setSearchTerm] = useState('');
             const [editingClientId, setEditingClientId] = useState(null);
-            const [syncStatus, setSyncStatus] = useState('Synchronisé ☁️');
+            const [syncStatus, setSyncStatus] = useState('☁️');
+            const [lastBackup, setLastBackup] = useState(null);
+            const [autoBackupEnabled, setAutoBackupEnabled] = useState(true);
             const [newClient, setNewClient] = useState({ nom: '', prenom: '', telephone: '', email: '' });
 
+            // Chargement des données
             useEffect(() => {
                 const unsubscribe = db.collection('clients').onSnapshot((snapshot) => {
-                    const clientsData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-                    setClients(clientsData.sort((a, b) => new Date(b.dateCreation) - new Date(a.dateCreation)));
-                    setSyncStatus('Synchronisé ☁️');
-                }, (error) => {
-                    console.error('Erreur sync:', error);
-                    setSyncStatus('Erreur ⚠️');
+                    const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                    setClients(data.sort((a, b) => new Date(b.dateCreation) - new Date(a.dateCreation)));
+                    setSyncStatus('☁️ Sync');
                 });
+                
+                // Charger la date de dernière sauvegarde
+                const savedBackupDate = localStorage.getItem('lastBackupDate');
+                if (savedBackupDate) {
+                    setLastBackup(new Date(savedBackupDate));
+                }
+                
                 return () => unsubscribe();
             }, []);
 
+            // Sauvegarde automatique toutes les 24h
+            useEffect(() => {
+                if (!autoBackupEnabled || clients.length === 0) return;
+
+                const checkAutoBackup = () => {
+                    const now = new Date();
+                    if (!lastBackup || (now - lastBackup) > 24 * 60 * 60 * 1000) {
+                        handleAutoBackup();
+                    }
+                };
+
+                // Vérifier au chargement et toutes les heures
+                checkAutoBackup();
+                const interval = setInterval(checkAutoBackup, 60 * 60 * 1000);
+                return () => clearInterval(interval);
+            }, [clients, lastBackup, autoBackupEnabled]);
+
             const saveClient = async (client) => {
-                try {
-                    setSyncStatus('Synchronisation... ⏳');
-                    await db.collection('clients').doc(client.id).set(client);
-                    setSyncStatus('Synchronisé ☁️');
-                } catch (error) {
-                    alert('Erreur sauvegarde');
-                    setSyncStatus('Erreur ⚠️');
-                }
+                await db.collection('clients').doc(client.id).set(client);
+            };
+
+            const handleAutoBackup = () => {
+                const backup = {
+                    version: '1.0',
+                    dateExport: new Date().toISOString(),
+                    clients: clients,
+                    stats: {
+                        totalClients: clients.length,
+                        totalCartes: clients.reduce((s, c) => s + (c.cartes?.length || 0), 0),
+                        totalPoses: clients.reduce((s, c) => s + c.cartes?.reduce((x, carte) => x + carte.poses.filter(p => p).length, 0) || 0, 0)
+                    }
+                };
+
+                localStorage.setItem('autoBackup', JSON.stringify(backup));
+                localStorage.setItem('lastBackupDate', new Date().toISOString());
+                setLastBackup(new Date());
             };
 
             const handleExport = () => {
-                const dataStr = JSON.stringify(clients, null, 2);
-                const dataBlob = new Blob([dataStr], { type: 'application/json' });
-                const url = URL.createObjectURL(dataBlob);
-                const link = document.createElement('a');
-                link.href = url;
-                link.download = `cartes-cordage-${new Date().toISOString().split('T')[0]}.json`;
-                link.click();
-                URL.revokeObjectURL(url);
-                alert(`✅ Sauvegarde téléchargée !\n${clients.length} clients exportés`);
+                const backup = {
+                    version: '1.0',
+                    dateExport: new Date().toISOString(),
+                    clients: clients,
+                    stats: {
+                        totalClients: clients.length,
+                        totalCartes: clients.reduce((s, c) => s + (c.cartes?.length || 0), 0),
+                        totalPoses: clients.reduce((s, c) => s + c.cartes?.reduce((x, carte) => x + carte.poses.filter(p => p).length, 0) || 0, 0)
+                    }
+                };
+
+                const json = JSON.stringify(backup, null, 2);
+                const blob = new Blob([json], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `cordage-backup-${new Date().toISOString().split('T')[0]}.json`;
+                a.click();
+                
+                // Mettre à jour la date de sauvegarde
+                localStorage.setItem('lastBackupDate', new Date().toISOString());
+                setLastBackup(new Date());
+                
+                alert(`✅ Sauvegarde réussie !\n\n📊 Statistiques :\n• ${backup.stats.totalClients} clients\n• ${backup.stats.totalCartes} cartes\n• ${backup.stats.totalPoses} poses`);
             };
 
             const handleImport = (e) => {
                 const file = e.target.files[0];
                 if (!file) return;
                 const reader = new FileReader();
-                reader.onload = async (event) => {
+                reader.onload = async (ev) => {
                     try {
-                        const importedClients = JSON.parse(event.target.result);
-                        if (!Array.isArray(importedClients)) throw new Error('Format invalide');
-                        if (!confirm(`Restaurer ${importedClients.length} clients ?\nCela écrasera les données existantes.`)) return;
-                        setSyncStatus('Restauration... ⏳');
-                        for (const client of importedClients) {
-                            await db.collection('clients').doc(client.id).set(client);
+                        const backup = JSON.parse(ev.target.result);
+                        
+                        // Vérifier la structure
+                        if (!backup.clients || !Array.isArray(backup.clients)) {
+                            alert('❌ Format de fichier invalide');
+                            return;
                         }
-                        setSyncStatus('Synchronisé ☁️');
-                        alert(`✅ ${importedClients.length} clients restaurés avec succès !`);
+
+                        const stats = backup.stats || {
+                            totalClients: backup.clients.length,
+                            totalCartes: backup.clients.reduce((s, c) => s + (c.cartes?.length || 0), 0),
+                            totalPoses: backup.clients.reduce((s, c) => s + c.cartes?.reduce((x, carte) => x + carte.poses.filter(p => p).length, 0) || 0, 0)
+                        };
+
+                        const confirmMsg = `Restaurer cette sauvegarde ?\n\n📊 Contenu :\n• ${stats.totalClients} clients\n• ${stats.totalCartes} cartes\n• ${stats.totalPoses} poses\n\n⚠️ Les données actuelles seront remplacées`;
+                        
+                        if (confirm(confirmMsg)) {
+                            // Supprimer toutes les données actuelles
+                            const currentClients = await db.collection('clients').get();
+                            const batch = db.batch();
+                            currentClients.forEach(doc => batch.delete(doc.ref));
+                            await batch.commit();
+
+                            // Restaurer les données
+                            for (const client of backup.clients) {
+                                await db.collection('clients').doc(client.id).set(client);
+                            }
+                            
+                            alert('✅ Restauration réussie !');
+                        }
                     } catch (error) {
-                        console.error('Erreur import:', error);
-                        alert('❌ Erreur lors de l\'importation. Vérifiez que le fichier est valide.');
+                        console.error(error);
+                        alert('❌ Erreur lors de la restauration');
                     }
                 };
                 reader.readAsText(file);
-                e.target.value = '';
+                e.target.value = ''; // Reset input
             };
 
-            const handleAddClient = async () => {
-                if (!newClient.nom || !newClient.prenom) { alert('Nom et prénom obligatoires'); return; }
-                const client = { id: Date.now().toString(), ...newClient, cartes: [], dateCreation: new Date().toISOString() };
-                await saveClient(client);
+            const addClient = async () => {
+                if (!newClient.nom || !newClient.prenom) return alert('Nom et prénom requis');
+                await saveClient({ 
+                    id: Date.now().toString(), 
+                    ...newClient, 
+                    cartes: [], 
+                    dateCreation: new Date().toISOString() 
+                });
                 setNewClient({ nom: '', prenom: '', telephone: '', email: '' });
                 setShowAddForm(false);
             };
 
-            const handleTogglePose = async (clientId, carteIdx, poseIdx) => {
-                const client = clients.find(c => c.id === clientId);
+            const togglePose = async (cid, ci, pi) => {
+                const client = clients.find(c => c.id === cid);
                 const updated = { ...client };
-                if (updated.cartes[carteIdx].poses[poseIdx]) {
-                    updated.cartes[carteIdx].poses[poseIdx] = null;
+                if (updated.cartes[ci].poses[pi]) {
+                    updated.cartes[ci].poses[pi] = null;
                 } else {
-                    updated.cartes[carteIdx].poses[poseIdx] = { date: new Date().toISOString(), cordage: '', tension: '' };
-                    const used = updated.cartes[carteIdx].poses.filter(p => p).length;
-                    const left = 10 - used;
-                    if (left === 3) alert(`🎾 Il reste 3 poses pour ${client.prenom} ${client.nom} !`);
-                    if (left === 0) alert(`✅ Carte complète pour ${client.prenom} ${client.nom} !`);
+                    updated.cartes[ci].poses[pi] = { 
+                        date: new Date().toISOString(), 
+                        cordage: '', 
+                        tension: '' 
+                    };
+                    const used = updated.cartes[ci].poses.filter(p => p).length;
+                    if (10 - used === 3) alert(`⚠️ Il reste 3 poses`);
+                    if (used === 10) alert('✅ Carte complète !');
                 }
                 await saveClient(updated);
             };
 
-            const handleAddCarte = async (clientId, sport) => {
-                const client = clients.find(c => c.id === clientId);
-                await saveClient({ ...client, cartes: [...client.cartes, { id: Date.now().toString(), sport: sport, dateAchat: new Date().toISOString(), poses: Array(10).fill(null) }] });
+            const addCarte = async (cid, sport) => {
+                const c = clients.find(x => x.id === cid);
+                await saveClient({ 
+                    ...c, 
+                    cartes: [...(c.cartes || []), { 
+                        id: Date.now().toString(), 
+                        sport, 
+                        dateAchat: new Date().toISOString(), 
+                        poses: Array(10).fill(null) 
+                    }] 
+                });
             };
 
-            const handleDeleteClient = async (clientId) => {
-                if (confirm('Supprimer ce client ?')) {
-                    try {
-                        setSyncStatus('Synchronisation... ⏳');
-                        await db.collection('clients').doc(clientId).delete();
-                        setSyncStatus('Synchronisé ☁️');
-                    } catch { alert('Erreur suppression'); setSyncStatus('Erreur ⚠️'); }
+            const delClient = async (cid) => {
+                if (confirm('⚠️ Supprimer ce client et toutes ses cartes ?')) {
+                    await db.collection('clients').doc(cid).delete();
                 }
             };
 
-            const handleDeleteCarte = async (clientId, carteIdx) => {
-                if (confirm('Supprimer cette carte ?')) {
-                    const client = clients.find(c => c.id === clientId);
-                    await saveClient({ ...client, cartes: client.cartes.filter((_, idx) => idx !== carteIdx) });
+            const delCarte = async (cid, ci) => {
+                if (confirm('⚠️ Supprimer cette carte ?')) {
+                    const c = clients.find(x => x.id === cid);
+                    await saveClient({ ...c, cartes: c.cartes.filter((_, i) => i !== ci) });
                 }
             };
 
-            const handleEditClient = (client) => { setEditingClientId(client.id); };
-            const handleSaveEdit = async (clientId, updatedInfo) => {
-                const client = clients.find(c => c.id === clientId);
-                await saveClient({ ...client, ...updatedInfo });
-                setEditingClientId(null);
-            };
-            const handleCancelEdit = () => { setEditingClientId(null); };
-
-            const handleUpdatePoseDetails = async (clientId, carteIdx, poseIdx, field, value) => {
-                const client = clients.find(c => c.id === clientId);
-                const updated = { ...client };
-                if (updated.cartes[carteIdx].poses[poseIdx]) {
-                    updated.cartes[carteIdx].poses[poseIdx][field] = value;
-                    await saveClient(updated);
+            const updatePose = async (cid, ci, pi, field, val) => {
+                const c = clients.find(x => x.id === cid);
+                const u = { ...c };
+                if (u.cartes[ci].poses[pi]) {
+                    u.cartes[ci].poses[pi][field] = val;
+                    await saveClient(u);
                 }
             };
 
             const filtered = clients.filter(c => {
                 const s = searchTerm.toLowerCase();
-                return c.nom.toLowerCase().includes(s) || c.prenom.toLowerCase().includes(s) || (c.telephone?.includes(searchTerm)) || (c.email?.toLowerCase().includes(s));
+                return c.nom.toLowerCase().includes(s) || 
+                       c.prenom.toLowerCase().includes(s) || 
+                       (c.telephone?.includes(s)) || 
+                       (c.email?.toLowerCase().includes(s));
             });
 
-            const cartesTennis = clients.reduce((sum, c) => sum + c.cartes.filter(carte => carte.sport === 'tennis').length, 0);
-            const cartesBadminton = clients.reduce((sum, c) => sum + c.cartes.filter(carte => carte.sport === 'badminton').length, 0);
-            const totalPoses = clients.reduce((sum, c) => sum + c.cartes.reduce((s, carte) => s + carte.poses.filter(p => p).length, 0), 0);
+            const formatDate = (date) => {
+                if (!date) return 'Jamais';
+                const d = new Date(date);
+                const now = new Date();
+                const diff = now - d;
+                const hours = Math.floor(diff / (1000 * 60 * 60));
+                
+                if (hours < 1) return 'Il y a moins d\'1h';
+                if (hours < 24) return `Il y a ${hours}h`;
+                const days = Math.floor(hours / 24);
+                if (days === 1) return 'Hier';
+                if (days < 7) return `Il y a ${days} jours`;
+                return d.toLocaleDateString('fr-FR');
+            };
 
             return (
                 <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-4">
                     <div className="max-w-7xl mx-auto">
                         <div className="bg-white rounded-xl shadow-xl p-6 mb-6">
                             <div className="flex flex-col gap-4">
-                                <div className="flex items-center justify-between">
-                                    <div className="flex items-center gap-4">
-                                        <div className="bg-gradient-to-br from-indigo-600 to-purple-600 p-4 rounded-xl shadow-lg"><Icons.CreditCard /></div>
-                                        <div>
-                                            <h1 className="text-3xl font-bold">Cartes Cordage Pro</h1>
-                                            <p className="text-gray-600 flex items-center gap-2 text-sm">
-                                                Tennis & Badminton
-                                                <span className="bg-green-100 text-green-700 px-2 py-1 rounded-full flex items-center gap-1">
-                                                    <Icons.Cloud />
-                                                    {syncStatus}
-                                                </span>
-                                            </p>
-                                        </div>
+                                <div className="flex justify-between items-center">
+                                    <h1 className="text-3xl font-bold">Cartes Cordage Pro</h1>
+                                    <span className="bg-green-100 text-green-700 px-3 py-1 rounded text-sm">{syncStatus}</span>
+                                </div>
+                                
+                                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                                    <div className="flex justify-between items-center mb-2">
+                                        <h3 className="font-semibold text-blue-900">💾 Sauvegarde automatique</h3>
+                                        <label className="flex items-center gap-2 cursor-pointer">
+                                            <input 
+                                                type="checkbox" 
+                                                checked={autoBackupEnabled}
+                                                onChange={(e) => setAutoBackupEnabled(e.target.checked)}
+                                                className="w-4 h-4"
+                                            />
+                                            <span className="text-sm">Activée</span>
+                                        </label>
                                     </div>
+                                    <p className="text-sm text-gray-600">
+                                        Dernière sauvegarde : {formatDate(lastBackup)}
+                                    </p>
                                 </div>
 
                                 <div className="flex gap-2 flex-wrap">
-                                    <button onClick={handleExport} className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 shadow">
-                                        <Icons.Download />
-                                        💾 Sauvegarder
+                                    <button onClick={handleExport} className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded transition">
+                                        💾 Exporter
                                     </button>
-                                    <label className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 shadow cursor-pointer">
-                                        <Icons.Upload />
-                                        📤 Restaurer
+                                    <label className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded cursor-pointer transition">
+                                        📤 Importer
                                         <input type="file" accept=".json" onChange={handleImport} className="hidden" />
                                     </label>
-                                    <button onClick={() => setShowAddForm(!showAddForm)} className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-6 py-2 rounded-lg flex items-center gap-2 shadow ml-auto">
-                                        <Icons.Plus />
-                                        Nouveau Client
+                                    <button onClick={() => setShowAddForm(!showAddForm)} className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded ml-auto transition">
+                                        + Nouveau Client
                                     </button>
                                 </div>
                             </div>
 
-                            <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mt-6">
-                                <div className="bg-blue-100 p-4 rounded-lg"><p className="text-blue-600 text-sm font-semibold">Clients</p><p className="text-3xl font-bold text-blue-800">{clients.length}</p></div>
-                                <div className="bg-green-100 p-4 rounded-lg"><p className="text-green-600 text-sm font-semibold">🎾 Tennis</p><p className="text-3xl font-bold text-green-800">{cartesTennis}</p></div>
-                                <div className="bg-orange-100 p-4 rounded-lg"><p className="text-orange-600 text-sm font-semibold">🏸 Badminton</p><p className="text-3xl font-bold text-orange-800">{cartesBadminton}</p></div>
-                                <div className="bg-purple-100 p-4 rounded-lg"><p className="text-purple-600 text-sm font-semibold">Poses</p><p className="text-3xl font-bold text-purple-800">{totalPoses}</p></div>
+                            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6">
+                                <div className="bg-blue-100 p-4 rounded">
+                                    <p className="text-sm text-gray-600">Clients</p>
+                                    <p className="text-2xl font-bold">{clients.length}</p>
+                                </div>
+                                <div className="bg-green-100 p-4 rounded">
+                                    <p className="text-sm text-gray-600">🎾 Tennis</p>
+                                    <p className="text-2xl font-bold">
+                                        {clients.reduce((s, c) => s + (c.cartes?.filter(x => x.sport === 'tennis').length || 0), 0)}
+                                    </p>
+                                </div>
+                                <div className="bg-orange-100 p-4 rounded">
+                                    <p className="text-sm text-gray-600">🏸 Badminton</p>
+                                    <p className="text-2xl font-bold">
+                                        {clients.reduce((s, c) => s + (c.cartes?.filter(x => x.sport === 'badminton').length || 0), 0)}
+                                    </p>
+                                </div>
+                                <div className="bg-purple-100 p-4 rounded">
+                                    <p className="text-sm text-gray-600">Total Poses</p>
+                                    <p className="text-2xl font-bold">
+                                        {clients.reduce((s, c) => s + (c.cartes?.reduce((x, carte) => x + carte.poses.filter(p => p).length, 0) || 0), 0)}
+                                    </p>
+                                </div>
                             </div>
                         </div>
 
-                        <div className="bg-white rounded-xl shadow-lg p-4 mb-6">
-                            <div className="relative"><Icons.Search /><input type="text" placeholder="Rechercher..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} className="w-full pl-10 pr-4 py-3 border rounded-lg" /></div>
+                        <div className="bg-white rounded-xl shadow p-4 mb-6">
+                            <input 
+                                type="text" 
+                                placeholder="🔍 Rechercher un client..." 
+                                value={searchTerm} 
+                                onChange={(e) => setSearchTerm(e.target.value)} 
+                                className="w-full px-4 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500" 
+                            />
                         </div>
 
                         {showAddForm && (
-                            <div className="bg-white rounded-xl shadow-xl p-6 mb-6 border-2 border-indigo-200">
-                                <h2 className="text-2xl font-bold mb-4">Nouveau Client</h2>
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                    <input type="text" placeholder="Nom *" value={newClient.nom} onChange={(e) => setNewClient({...newClient, nom: e.target.value})} className="border-2 rounded-lg px-4 py-3" />
-                                    <input type="text" placeholder="Prénom *" value={newClient.prenom} onChange={(e) => setNewClient({...newClient, prenom: e.target.value})} className="border-2 rounded-lg px-4 py-3" />
-                                    <input type="tel" placeholder="Téléphone" value={newClient.telephone} onChange={(e) => setNewClient({...newClient, telephone: e.target.value})} className="border-2 rounded-lg px-4 py-3" />
-                                    <input type="email" placeholder="Email" value={newClient.email} onChange={(e) => setNewClient({...newClient, email: e.target.value})} className="border-2 rounded-lg px-4 py-3" />
+                            <div className="bg-white rounded-xl shadow-xl p-6 mb-6">
+                                <h2 className="text-xl font-bold mb-4">Nouveau Client</h2>
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                                    <input 
+                                        placeholder="Nom *" 
+                                        value={newClient.nom} 
+                                        onChange={(e) => setNewClient({...newClient, nom: e.target.value})} 
+                                        className="border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" 
+                                    />
+                                    <input 
+                                        placeholder="Prénom *" 
+                                        value={newClient.prenom} 
+                                        onChange={(e) => setNewClient({...newClient, prenom: e.target.value})} 
+                                        className="border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" 
+                                    />
+                                    <input 
+                                        placeholder="Téléphone" 
+                                        value={newClient.telephone} 
+                                        onChange={(e) => setNewClient({...newClient, telephone: e.target.value})} 
+                                        className="border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" 
+                                    />
+                                    <input 
+                                        placeholder="Email" 
+                                        value={newClient.email} 
+                                        onChange={(e) => setNewClient({...newClient, email: e.target.value})} 
+                                        className="border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" 
+                                    />
                                 </div>
-                                <div className="flex gap-3 mt-6">
-                                    <button onClick={handleAddClient} className="bg-green-600 text-white px-8 py-3 rounded-lg">Créer</button>
-                                    <button onClick={() => setShowAddForm(false)} className="bg-gray-300 text-gray-800 px-8 py-3 rounded-lg">Annuler</button>
+                                <div className="flex gap-2">
+                                    <button onClick={addClient} className="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded transition">
+                                        ✅ Créer
+                                    </button>
+                                    <button onClick={() => setShowAddForm(false)} className="bg-gray-300 hover:bg-gray-400 px-6 py-2 rounded transition">
+                                        Annuler
+                                    </button>
                                 </div>
                             </div>
                         )}
 
-                        <div className="space-y-6">
-                            {filtered.length === 0 ? (
-                                <div className="bg-white rounded-xl shadow-xl p-12 text-center"><Icons.Users /><p className="text-gray-600 text-xl font-semibold mt-4">{searchTerm ? 'Aucun client trouvé' : 'Aucun client'}</p></div>
-                            ) : (
-                                filtered.map(client => (
-                                    <div key={client.id} className="bg-white rounded-xl shadow-xl p-6">
-                                        {editingClientId === client.id ? (
-                                            <EditClientForm client={client} onSave={(info) => handleSaveEdit(client.id, info)} onCancel={handleCancelEdit} />
-                                        ) : (
-                                            <>
-                                                <div className="flex flex-col md:flex-row justify-between mb-6 gap-4">
-                                                    <div>
-                                                        <h3 className="text-2xl font-bold">{client.prenom} {client.nom}</h3>
-                                                        {client.telephone && <p className="text-gray-600">📱 {client.telephone}</p>}
-                                                        {client.email && <p className="text-gray-600">✉️ {client.email}</p>}
+                        <div className="space-y-4">
+                            {filtered.map(client => (
+                                <div key={client.id} className="bg-white rounded-xl shadow-xl p-6">
+                                    <div className="flex justify-between mb-4">
+                                        <div>
+                                            <h3 className="text-xl font-bold">{client.prenom} {client.nom}</h3>
+                                            {client.telephone && <p className="text-sm text-gray-600">📱 {client.telephone}</p>}
+                                            {client.email && <p className="text-sm text-gray-600">📧 {client.email}</p>}
+                                        </div>
+                                        <div className="flex gap-2">
+                                            <button 
+                                                onClick={() => addCarte(client.id, 'tennis')} 
+                                                className="bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded text-sm transition"
+                                                title="Ajouter carte tennis"
+                                            >
+                                                🎾
+                                            </button>
+                                            <button 
+                                                onClick={() => addCarte(client.id, 'badminton')} 
+                                                className="bg-orange-600 hover:bg-orange-700 text-white px-3 py-1 rounded text-sm transition"
+                                                title="Ajouter carte badminton"
+                                            >
+                                                🏸
+                                            </button>
+                                            <button 
+                                                onClick={() => delClient(client.id)} 
+                                                className="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded text-sm transition"
+                                                title="Supprimer client"
+                                            >
+                                                🗑️
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div className="space-y-3">
+                                        {client.cartes?.map((carte, ci) => {
+                                            const used = carte.poses.filter(p => p).length;
+                                            const isTennis = carte.sport === 'tennis';
+                                            return (
+                                                <div key={carte.id} className={`border-2 rounded-lg p-4 ${isTennis ? 'bg-green-50 border-green-200' : 'bg-orange-50 border-orange-200'}`}>
+                                                    <div className="flex justify-between mb-3">
+                                                        <div>
+                                                            <span className="font-bold">{isTennis ? '🎾' : '🏸'} Carte #{ci + 1}</span>
+                                                            <p className="text-xs text-gray-500">
+                                                                Créée le {new Date(carte.dateAchat).toLocaleDateString('fr-FR')}
+                                                            </p>
+                                                        </div>
+                                                        <div className="flex gap-2 items-center">
+                                                            <span className="text-sm font-bold bg-white px-2 py-1 rounded">{used}/10</span>
+                                                            <button 
+                                                                onClick={() => delCarte(client.id, ci)} 
+                                                                className="text-red-600 hover:text-red-800 text-sm transition"
+                                                                title="Supprimer carte"
+                                                            >
+                                                                🗑️
+                                                            </button>
+                                                        </div>
                                                     </div>
-                                                    <div className="flex gap-2 flex-wrap">
-                                                        <button onClick={() => handleEditClient(client)} className="bg-amber-600 text-white px-4 py-2 rounded-lg flex items-center gap-2"><Icons.Edit2 />Modifier</button>
-                                                        <button onClick={() => handleAddCarte(client.id, 'tennis')} className="bg-green-600 text-white px-4 py-2 rounded-lg flex items-center gap-2"><Icons.Plus />🎾</button>
-                                                        <button onClick={() => handleAddCarte(client.id, 'badminton')} className="bg-orange-600 text-white px-4 py-2 rounded-lg flex items-center gap-2"><Icons.Plus />🏸</button>
-                                                        <button onClick={() => handleDeleteClient(client.id)} className="bg-red-600 text-white p-2 rounded-lg"><Icons.Trash2 /></button>
+                                                    <div className="grid grid-cols-5 gap-2">
+                                                        {carte.poses.map((pose, pi) => (
+                                                            <div key={pi}>
+                                                                <button 
+                                                                    onClick={() => togglePose(client.id, ci, pi)} 
+                                                                    className={`w-full p-2 rounded text-xs font-semibold transition ${
+                                                                        pose 
+                                                                            ? (isTennis ? 'bg-green-500 hover:bg-green-600' : 'bg-orange-500 hover:bg-orange-600') + ' text-white' 
+                                                                            : 'bg-white border hover:bg-gray-50'
+                                                                    }`}
+                                                                >
+                                                                    {pose ? '✓' : '○'} {pi + 1}
+                                                                </button>
+                                                                {pose && (
+                                                                    <div className="mt-1 space-y-1">
+                                                                        <input 
+                                                                            placeholder="Cordage" 
+                                                                            value={pose.cordage || ''} 
+                                                                            onChange={(e) => updatePose(client.id, ci, pi, 'cordage', e.target.value)} 
+                                                                            className="w-full text-xs border rounded px-1 py-1 focus:outline-none focus:ring-1 focus:ring-blue-500" 
+                                                                        />
+                                                                        <input 
+                                                                            placeholder="Tension" 
+                                                                            value={pose.tension || ''} 
+                                                                            onChange={(e) => updatePose(client.id, ci, pi, 'tension', e.target.value)} 
+                                                                            className="w-full text-xs border rounded px-1 py-1 focus:outline-none focus:ring-1 focus:ring-blue-500" 
+                                                                        />
+                                                                        <p className="text-xs text-gray-500">
+                                                                            {new Date(pose.date).toLocaleDateString('fr-FR')}
+                                                                        </p>
+                                                                    </div>
+                                                                )}
+                                                            </div>
+                                                        ))}
                                                     </div>
+                                                    {used === 7 && (
+                                                        <div className="mt-2 bg-yellow-100 border border-yellow-400 rounded p-2 text-center text-xs font-semibold">
+                                                            ⚠️ Plus que 3 poses restantes
+                                                        </div>
+                                                    )}
+                                                    {used === 10 && (
+                                                        <div className="mt-2 bg-green-100 border border-green-400 rounded p-2 text-center text-xs font-semibold">
+                                                            ✅ Carte complète !
+                                                        </div>
+                                                    )}
                                                 </div>
-                                                <div className="space-y-4">
-                                                    {client.cartes?.length === 0 ? (
-                                                        <div className="bg-gray-50 border-2 border-dashed rounded-xl p-8 text-center"><Icons.CreditCard /><p className="text-gray-600 font-semibold mt-3">Aucune carte</p></div>
-                                                    ) : (
-                                                        client.cartes?.map((carte, carteIdx) => {
-                                                            const used = carte.poses.filter(p => p).length;
-                                                            const prog = (used / 10) * 100;
-                                                            const isTennis = carte.sport === 'tennis';
-                                                            return (
-                                                                <div key={carte.id} className={`border-2 rounded-xl p-5 ${isTennis ? 'border-green-200 bg-green-50' : 'border-orange-200 bg-orange-50'}`}>
-                                                                    <div className="flex justify-between mb-4">
-                                                                        <h4 className="font-bold text-lg">{isTennis ? '🎾' : '🏸'} Carte #{carteIdx + 1}</h4>
-                                                                        <div className="flex items-center gap-4">
-                                                                            <span className={`font-bold ${isTennis ? 'text-green-600' : 'text-orange-600'}`}>{used}/10</span>
-                                                                            <span className="text-sm text-gray-600">{new Date(carte.dateAchat).toLocaleDateString('fr-FR')}</span>
-                                                                            <button onClick={() => handleDeleteCarte(client.id, carteIdx)} className="bg-red-600 text-white p-2 rounded-lg"><Icons.Trash2 /></button>
-                                                                        </div>
-                                                                    </div>
-                                                                    <div className="mb-4">
-                                                                        <div className="w-full bg-gray-200 rounded-full h-3">
-                                                                            <div className={`h-3 rounded-full ${isTennis ? 'bg-green-600' : 'bg-orange-600'}`} style={{width: `${prog}%`}} />
-                                                                        </div>
-                                                                    </div>
-                                                                    <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
-                                                                        {carte.poses.map((pose, poseIdx) => (
-                                                                            <div key={poseIdx}>
-                                                                                <button onClick={() => handleTogglePose(client.id, carteIdx, poseIdx)} className={`w-full p-4 rounded-xl border-2 ${pose ? `${isTennis ? 'bg-green-500' : 'bg-orange-500'} text-white` : 'bg-white'}`}>
-                                                                                    <div className="text-center">
-                                                                                        {pose ? <Icons.
+                                            );
+                                        })}
+                                    </div>
+                                </div>
+                            ))}
+                            
+                            {filtered.length === 0 && (
+                                <div className="bg-white rounded-xl shadow p-8 text-center text-gray-500">
+                                    {searchTerm ? '🔍 Aucun client trouvé' : '📝 Aucun client enregistré'}
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+
+        ReactDOM.render(<App />, document.getElementById('root'));
+    </script>
+</body>
+</html>
