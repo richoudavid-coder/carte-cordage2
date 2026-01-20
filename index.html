@@ -42,7 +42,9 @@
             Save: () => <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4" /></svg>,
             Search: () => <svg className="w-5 h-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>,
             Award: () => <svg className="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z" /></svg>,
-            Cloud: () => <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z" /></svg>
+            Cloud: () => <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z" /></svg>,
+            Download: () => <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>,
+            Upload: () => <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" /></svg>
         };
 
         function EditClientForm({ client, onSave, onCancel }) {
@@ -52,14 +54,14 @@
                 <div className="bg-gradient-to-br from-amber-50 to-orange-50 p-6 rounded-xl border-2 border-amber-300">
                     <h3 className="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2"><Icons.Edit2 />Modifier le client</h3>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                        <div><label className="block text-sm font-semibold text-gray-700 mb-1">Nom *</label><input type="text" value={formData.nom} onChange={(e) => setFormData({...formData, nom: e.target.value})} className="w-full border-2 border-gray-300 rounded-lg px-4 py-2" /></div>
-                        <div><label className="block text-sm font-semibold text-gray-700 mb-1">Prénom *</label><input type="text" value={formData.prenom} onChange={(e) => setFormData({...formData, prenom: e.target.value})} className="w-full border-2 border-gray-300 rounded-lg px-4 py-2" /></div>
-                        <div><label className="block text-sm font-semibold text-gray-700 mb-1">Téléphone</label><input type="tel" value={formData.telephone} onChange={(e) => setFormData({...formData, telephone: e.target.value})} className="w-full border-2 border-gray-300 rounded-lg px-4 py-2" /></div>
-                        <div><label className="block text-sm font-semibold text-gray-700 mb-1">Email</label><input type="email" value={formData.email} onChange={(e) => setFormData({...formData, email: e.target.value})} className="w-full border-2 border-gray-300 rounded-lg px-4 py-2" /></div>
+                        <div><label className="block text-sm font-semibold mb-1">Nom *</label><input type="text" value={formData.nom} onChange={(e) => setFormData({...formData, nom: e.target.value})} className="w-full border-2 rounded-lg px-4 py-2" /></div>
+                        <div><label className="block text-sm font-semibold mb-1">Prénom *</label><input type="text" value={formData.prenom} onChange={(e) => setFormData({...formData, prenom: e.target.value})} className="w-full border-2 rounded-lg px-4 py-2" /></div>
+                        <div><label className="block text-sm font-semibold mb-1">Téléphone</label><input type="tel" value={formData.telephone} onChange={(e) => setFormData({...formData, telephone: e.target.value})} className="w-full border-2 rounded-lg px-4 py-2" /></div>
+                        <div><label className="block text-sm font-semibold mb-1">Email</label><input type="email" value={formData.email} onChange={(e) => setFormData({...formData, email: e.target.value})} className="w-full border-2 rounded-lg px-4 py-2" /></div>
                     </div>
                     <div className="flex gap-3">
-                        <button onClick={handleSubmit} className="bg-gradient-to-r from-green-600 to-green-700 text-white px-6 py-2 rounded-lg flex items-center gap-2 shadow-lg font-semibold"><Icons.Save />Enregistrer</button>
-                        <button onClick={onCancel} className="bg-gray-300 hover:bg-gray-400 text-gray-800 px-6 py-2 rounded-lg font-semibold">Annuler</button>
+                        <button onClick={handleSubmit} className="bg-green-600 text-white px-6 py-2 rounded-lg flex items-center gap-2"><Icons.Save />Enregistrer</button>
+                        <button onClick={onCancel} className="bg-gray-300 text-gray-800 px-6 py-2 rounded-lg">Annuler</button>
                     </div>
                 </div>
             );
@@ -75,15 +77,12 @@
 
             useEffect(() => {
                 const unsubscribe = db.collection('clients').onSnapshot((snapshot) => {
-                    const clientsData = snapshot.docs.map(doc => ({
-                        id: doc.id,
-                        ...doc.data()
-                    }));
+                    const clientsData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
                     setClients(clientsData.sort((a, b) => new Date(b.dateCreation) - new Date(a.dateCreation)));
                     setSyncStatus('Synchronisé ☁️');
                 }, (error) => {
                     console.error('Erreur sync:', error);
-                    setSyncStatus('Erreur de synchronisation ⚠️');
+                    setSyncStatus('Erreur ⚠️');
                 });
                 return () => unsubscribe();
             }, []);
@@ -94,10 +93,45 @@
                     await db.collection('clients').doc(client.id).set(client);
                     setSyncStatus('Synchronisé ☁️');
                 } catch (error) {
-                    console.error('Erreur:', error);
-                    alert('Erreur lors de la sauvegarde');
+                    alert('Erreur sauvegarde');
                     setSyncStatus('Erreur ⚠️');
                 }
+            };
+
+            const handleExport = () => {
+                const dataStr = JSON.stringify(clients, null, 2);
+                const dataBlob = new Blob([dataStr], { type: 'application/json' });
+                const url = URL.createObjectURL(dataBlob);
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = `cartes-cordage-${new Date().toISOString().split('T')[0]}.json`;
+                link.click();
+                URL.revokeObjectURL(url);
+                alert(`✅ Sauvegarde téléchargée !\n${clients.length} clients exportés`);
+            };
+
+            const handleImport = (e) => {
+                const file = e.target.files[0];
+                if (!file) return;
+                const reader = new FileReader();
+                reader.onload = async (event) => {
+                    try {
+                        const importedClients = JSON.parse(event.target.result);
+                        if (!Array.isArray(importedClients)) throw new Error('Format invalide');
+                        if (!confirm(`Restaurer ${importedClients.length} clients ?\nCela écrasera les données existantes.`)) return;
+                        setSyncStatus('Restauration... ⏳');
+                        for (const client of importedClients) {
+                            await db.collection('clients').doc(client.id).set(client);
+                        }
+                        setSyncStatus('Synchronisé ☁️');
+                        alert(`✅ ${importedClients.length} clients restaurés avec succès !`);
+                    } catch (error) {
+                        console.error('Erreur import:', error);
+                        alert('❌ Erreur lors de l\'importation. Vérifiez que le fichier est valide.');
+                    }
+                };
+                reader.readAsText(file);
+                e.target.value = '';
             };
 
             const handleAddClient = async () => {
@@ -134,7 +168,7 @@
                         setSyncStatus('Synchronisation... ⏳');
                         await db.collection('clients').doc(clientId).delete();
                         setSyncStatus('Synchronisé ☁️');
-                    } catch (error) { alert('Erreur suppression'); setSyncStatus('Erreur ⚠️'); }
+                    } catch { alert('Erreur suppression'); setSyncStatus('Erreur ⚠️'); }
                 }
             };
 
@@ -175,22 +209,40 @@
                 <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-4">
                     <div className="max-w-7xl mx-auto">
                         <div className="bg-white rounded-xl shadow-xl p-6 mb-6">
-                            <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-                                <div className="flex items-center gap-4">
-                                    <div className="bg-gradient-to-br from-indigo-600 to-purple-600 p-4 rounded-xl shadow-lg"><Icons.CreditCard /></div>
-                                    <div>
-                                        <h1 className="text-3xl font-bold text-gray-800">Cartes Cordage Pro</h1>
-                                        <p className="text-gray-600 flex items-center gap-2">
-                                            Tennis & Badminton
-                                            <span className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full flex items-center gap-1">
-                                                <Icons.Cloud />
-                                                {syncStatus}
-                                            </span>
-                                        </p>
+                            <div className="flex flex-col gap-4">
+                                <div className="flex items-center justify-between">
+                                    <div className="flex items-center gap-4">
+                                        <div className="bg-gradient-to-br from-indigo-600 to-purple-600 p-4 rounded-xl shadow-lg"><Icons.CreditCard /></div>
+                                        <div>
+                                            <h1 className="text-3xl font-bold">Cartes Cordage Pro</h1>
+                                            <p className="text-gray-600 flex items-center gap-2 text-sm">
+                                                Tennis & Badminton
+                                                <span className="bg-green-100 text-green-700 px-2 py-1 rounded-full flex items-center gap-1">
+                                                    <Icons.Cloud />
+                                                    {syncStatus}
+                                                </span>
+                                            </p>
+                                        </div>
                                     </div>
                                 </div>
-                                <button onClick={() => setShowAddForm(!showAddForm)} className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-6 py-3 rounded-lg flex items-center gap-2 shadow-lg"><Icons.Plus />Nouveau Client</button>
+
+                                <div className="flex gap-2 flex-wrap">
+                                    <button onClick={handleExport} className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 shadow">
+                                        <Icons.Download />
+                                        💾 Sauvegarder
+                                    </button>
+                                    <label className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 shadow cursor-pointer">
+                                        <Icons.Upload />
+                                        📤 Restaurer
+                                        <input type="file" accept=".json" onChange={handleImport} className="hidden" />
+                                    </label>
+                                    <button onClick={() => setShowAddForm(!showAddForm)} className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-6 py-2 rounded-lg flex items-center gap-2 shadow ml-auto">
+                                        <Icons.Plus />
+                                        Nouveau Client
+                                    </button>
+                                </div>
                             </div>
+
                             <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mt-6">
                                 <div className="bg-blue-100 p-4 rounded-lg"><p className="text-blue-600 text-sm font-semibold">Clients</p><p className="text-3xl font-bold text-blue-800">{clients.length}</p></div>
                                 <div className="bg-green-100 p-4 rounded-lg"><p className="text-green-600 text-sm font-semibold">🎾 Tennis</p><p className="text-3xl font-bold text-green-800">{cartesTennis}</p></div>
@@ -213,8 +265,8 @@
                                     <input type="email" placeholder="Email" value={newClient.email} onChange={(e) => setNewClient({...newClient, email: e.target.value})} className="border-2 rounded-lg px-4 py-3" />
                                 </div>
                                 <div className="flex gap-3 mt-6">
-                                    <button onClick={handleAddClient} className="bg-green-600 text-white px-8 py-3 rounded-lg font-semibold">Créer</button>
-                                    <button onClick={() => setShowAddForm(false)} className="bg-gray-300 text-gray-800 px-8 py-3 rounded-lg font-semibold">Annuler</button>
+                                    <button onClick={handleAddClient} className="bg-green-600 text-white px-8 py-3 rounded-lg">Créer</button>
+                                    <button onClick={() => setShowAddForm(false)} className="bg-gray-300 text-gray-800 px-8 py-3 rounded-lg">Annuler</button>
                                 </div>
                             </div>
                         )}
@@ -237,16 +289,16 @@
                                                     </div>
                                                     <div className="flex gap-2 flex-wrap">
                                                         <button onClick={() => handleEditClient(client)} className="bg-amber-600 text-white px-4 py-2 rounded-lg flex items-center gap-2"><Icons.Edit2 />Modifier</button>
-                                                        <button onClick={() => handleAddCarte(client.id, 'tennis')} className="bg-green-600 text-white px-4 py-2 rounded-lg flex items-center gap-2"><Icons.Plus />🎾 Tennis</button>
-                                                        <button onClick={() => handleAddCarte(client.id, 'badminton')} className="bg-orange-600 text-white px-4 py-2 rounded-lg flex items-center gap-2"><Icons.Plus />🏸 Badminton</button>
+                                                        <button onClick={() => handleAddCarte(client.id, 'tennis')} className="bg-green-600 text-white px-4 py-2 rounded-lg flex items-center gap-2"><Icons.Plus />🎾</button>
+                                                        <button onClick={() => handleAddCarte(client.id, 'badminton')} className="bg-orange-600 text-white px-4 py-2 rounded-lg flex items-center gap-2"><Icons.Plus />🏸</button>
                                                         <button onClick={() => handleDeleteClient(client.id)} className="bg-red-600 text-white p-2 rounded-lg"><Icons.Trash2 /></button>
                                                     </div>
                                                 </div>
                                                 <div className="space-y-4">
-                                                    {client.cartes.length === 0 ? (
+                                                    {client.cartes?.length === 0 ? (
                                                         <div className="bg-gray-50 border-2 border-dashed rounded-xl p-8 text-center"><Icons.CreditCard /><p className="text-gray-600 font-semibold mt-3">Aucune carte</p></div>
                                                     ) : (
-                                                        client.cartes.map((carte, carteIdx) => {
+                                                        client.cartes?.map((carte, carteIdx) => {
                                                             const used = carte.poses.filter(p => p).length;
                                                             const prog = (used / 10) * 100;
                                                             const isTennis = carte.sport === 'tennis';
@@ -270,39 +322,4 @@
                                                                             <div key={poseIdx}>
                                                                                 <button onClick={() => handleTogglePose(client.id, carteIdx, poseIdx)} className={`w-full p-4 rounded-xl border-2 ${pose ? `${isTennis ? 'bg-green-500' : 'bg-orange-500'} text-white` : 'bg-white'}`}>
                                                                                     <div className="text-center">
-                                                                                        {pose ? <Icons.CheckCircle /> : <Icons.Circle />}
-                                                                                        <div className="font-bold text-sm mt-2">Pose {poseIdx + 1}</div>
-                                                                                        {pose && <div className="text-xs mt-1">{new Date(pose.date).toLocaleDateString('fr-FR')}</div>}
-                                                                                    </div>
-                                                                                </button>
-                                                                                {pose && (
-                                                                                    <div className="mt-2 space-y-1">
-                                                                                        <input type="text" placeholder="Cordage" value={pose.cordage || ''} onChange={(e) => handleUpdatePoseDetails(client.id, carteIdx, poseIdx, 'cordage', e.target.value)} className="w-full text-xs border rounded px-2 py-1" />
-                                                                                        <input type="text" placeholder="Tension" value={pose.tension || ''} onChange={(e) => handleUpdatePoseDetails(client.id, carteIdx, poseIdx, 'tension', e.target.value)} className="w-full text-xs border rounded px-2 py-1" />
-                                                                                    </div>
-                                                                                )}
-                                                                            </div>
-                                                                        ))}
-                                                                    </div>
-                                                                    {used === 7 && <div className={`mt-4 border-2 rounded-xl p-4 text-center ${isTennis ? 'bg-yellow-100 border-yellow-400' : 'bg-red-100 border-red-400'}`}><p className="font-bold">⚠️ Plus que 3 poses !</p></div>}
-                                                                    {used === 10 && <div className={`mt-4 border-2 rounded-xl p-4 text-center ${isTennis ? 'bg-green-100 border-green-400' : 'bg-orange-100 border-orange-400'}`}><p className="font-bold">✅ Carte complète !</p></div>}
-                                                                </div>
-                                                            );
-                                                        })
-                                                    )}
-                                                </div>
-                                            </>
-                                        )}
-                                    </div>
-                                ))
-                            )}
-                        </div>
-                    </div>
-                </div>
-            );
-        }
-
-        ReactDOM.render(<App />, document.getElementById('root'));
-    </script>
-</body>
-</html>
+                                                                                        {pose ? <Icons.
