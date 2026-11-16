@@ -1,495 +1,391 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <title>Cartes Cordage Pro</title>
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
-    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
-    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-    <script src="https://cdn.tailwindcss.com"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>3SETS BZH – Outils</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{
+  height:100%;
+  font-family:-apple-system,'Segoe UI',sans-serif;
+  background:linear-gradient(160deg,#1a1a2e 0%,#16213e 50%,#0f3460 100%);
+  display:flex;justify-content:center;align-items:flex-start;
+}
+.app{
+  width:100%;max-width:480px;
+  min-height:100vh;min-height:100dvh;
+  display:flex;flex-direction:column;
+  padding:env(safe-area-inset-top,0px) env(safe-area-inset-right,0px) env(safe-area-inset-bottom,0px) env(safe-area-inset-left,0px);
+  background:linear-gradient(160deg,#1a1a2e 0%,#16213e 50%,#0f3460 100%);
+}
+.header{
+  text-align:center;
+  padding:16px 20px 12px;
+  flex-shrink:0;
+}
+.header img{max-width:160px;height:auto;display:block;margin:0 auto}
+.tabs{
+  display:flex;
+  margin:0 16px 4px;
+  border-radius:14px;
+  overflow:hidden;
+  border:2px solid rgba(102,126,234,.6);
+  flex-shrink:0;
+}
+.tab{
+  flex:1;padding:11px 4px;border:none;
+  background:rgba(255,255,255,.07);color:rgba(255,255,255,.7);
+  font-size:13px;font-weight:700;cursor:pointer;line-height:1.3;
+  transition:all .2s;
+}
+.tab.on{background:linear-gradient(135deg,#667eea,#764ba2);color:#fff}
+.content{flex:1;min-width:0;padding:12px 16px 24px}
+.pane{display:none}.pane.on{display:block}
+/* INPUTS */
+.grp{margin-bottom:14px}
+label{display:block;color:rgba(255,255,255,.55);margin-bottom:5px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px}
+input[inputmode=decimal]{
+  width:100%;padding:13px 14px;
+  border:2px solid rgba(255,255,255,.12);
+  border-radius:10px;font-size:17px;
+  -webkit-appearance:none;
+  background:rgba(255,255,255,.08);
+  color:#fff;
+  transition:border-color .2s;
+}
+input[inputmode=decimal]::placeholder{color:rgba(255,255,255,.25)}
+input[inputmode=decimal]:focus{outline:none;border-color:#667eea;background:rgba(102,126,234,.15)}
+.sep{text-align:center;margin:10px 0;position:relative}
+.sep::before{content:'';position:absolute;left:0;right:0;top:50%;height:1px;background:rgba(255,255,255,.1)}
+.sep span{background:#16213e;padding:0 10px;position:relative;color:rgba(255,255,255,.35);font-size:11px;font-weight:700}
+.tva-row{display:flex;gap:6px;margin-top:6px}
+.tva-btn{
+  flex:1;padding:9px 2px;
+  border:2px solid rgba(255,255,255,.15);
+  background:rgba(255,255,255,.07);
+  border-radius:8px;cursor:pointer;
+  font-weight:700;color:rgba(255,255,255,.6);font-size:13px;
+  transition:all .2s;
+}
+.tva-btn.on{background:linear-gradient(135deg,#667eea,#764ba2);color:#fff;border-color:transparent}
+/* RÉSULTATS */
+.results{
+  background:rgba(0,0,0,.3);
+  border:1px solid rgba(255,255,255,.1);
+  border-radius:16px;padding:14px;margin-top:16px;
+  display:none;
+}
+.r-row{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:8px 0;border-bottom:1px solid rgba(255,255,255,.07);
+}
+.r-row:last-child{border:none}
+.r-lbl{font-size:12px;color:rgba(255,255,255,.5)}
+.r-val{font-size:17px;font-weight:700;color:#fff}
+.r-hl{
+  background:linear-gradient(135deg,rgba(102,126,234,.3),rgba(118,75,162,.3));
+  border:1px solid rgba(102,126,234,.4);
+  border-radius:10px;padding:11px;margin:6px 0;
+}
+.r-hl .r-val{font-size:22px;color:#a78bfa}
+.r-hl .r-lbl{color:rgba(255,255,255,.65)}
+/* CALC */
+.cdisp{
+  background:rgba(0,0,0,.4);
+  border-radius:14px;padding:14px 16px 10px;
+  margin-bottom:10px;
+  border:1px solid rgba(255,255,255,.08);
+}
+.cexpr{color:rgba(255,255,255,.35);font-size:12px;min-height:16px;text-align:right;margin-bottom:3px;word-break:break-all}
+.cscr{color:#fff;font-size:38px;font-weight:200;text-align:right;word-break:break-all;min-height:48px;line-height:1.1}
+.cmrow{display:flex;gap:5px;margin-bottom:8px}
+.cm{
+  flex:1;padding:7px 2px;border:none;border-radius:7px;
+  background:rgba(255,255,255,.1);color:rgba(255,255,255,.65);
+  font-size:11px;font-weight:700;cursor:pointer;
+}
+.cm:active{background:rgba(255,255,255,.2)}
+.cm.on{background:linear-gradient(135deg,#667eea,#764ba2);color:#fff}
+.cbgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.cb{
+  padding:17px 4px;border:none;border-radius:11px;
+  font-size:17px;font-weight:600;cursor:pointer;
+  transition:transform .1s;
+  -webkit-user-select:none;user-select:none;
+}
+.cb:active{transform:scale(.9)}
+.cbn{background:rgba(255,255,255,.12);color:#fff}
+.cbo{background:linear-gradient(135deg,#667eea,#764ba2);color:#fff}
+.cbeq{background:linear-gradient(135deg,#f093fb,#f5576c);color:#fff}
+.cbc{background:rgba(255,100,100,.7);color:#fff}
+.cbf{background:rgba(167,139,250,.2);color:#a78bfa;font-size:13px}
+.cs2{grid-column:span 2}
+.chist{
+  margin-top:10px;max-height:100px;overflow-y:auto;
+  border-top:1px solid rgba(255,255,255,.08);
+  padding-top:8px;display:none;
+}
+.chtitle{font-size:10px;color:rgba(255,255,255,.35);font-weight:700;margin-bottom:4px;text-transform:uppercase;letter-spacing:.5px}
+.chitem{
+  font-size:11px;color:rgba(255,255,255,.45);
+  padding:3px 0;border-bottom:1px solid rgba(255,255,255,.05);
+  display:flex;justify-content:space-between;
+}
+.chitem b{color:#a78bfa}
+.hint{font-size:12px;line-height:1.5;color:rgba(255,255,255,.68);margin:4px 0 14px}
+.grp.active label{color:#c4b5fd}
+.grp.active input{border-color:#a78bfa}
+input[aria-invalid=true]{border-color:#ff9696}
+.status{font-size:12px;line-height:1.5;color:#ffd0d0;margin-top:10px;min-height:18px}
+.reset{display:block;width:100%;padding:10px;margin-top:12px;border:1px solid rgba(255,255,255,.2);border-radius:9px;background:rgba(255,255,255,.07);color:#fff;font-size:13px;cursor:pointer}
+button:focus-visible{outline:2px solid #ddd6fe;outline-offset:2px}
+.r-lbl{padding-right:8px}.r-val{text-align:right;overflow-wrap:anywhere;min-width:0}
+@media(max-width:360px){.content{padding-left:12px;padding-right:12px}.r-hl .r-val{font-size:19px}}
+</style>
 </head>
 <body>
-    <div id="root"></div>
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-    <script type="text/babel">
-        firebase.initializeApp({
-            apiKey: "AIzaSyAiaN21dc4giFqIXs73y2FdoWfUY8OMeMc",
-            authDomain: "cartes-cordage.firebaseapp.com",
-            projectId: "cartes-cordage",
-            storageBucket: "cartes-cordage.firebasestorage.app",
-            messagingSenderId: "97320852158",
-            appId: "1:97320852158:web:0033c473b155f08788dcef"
-        });
-        const db = firebase.firestore();
-        const { useState, useEffect } = React;
+<div class="app">
+  <div class="header">
+    <img alt="3SETS BZH" src="data:image/png;base64,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" alt="3SETS BZH">
+  </div>
 
-        function App() {
-            const [clients, setClients] = useState([]);
-            const [showAddForm, setShowAddForm] = useState(false);
-            const [searchTerm, setSearchTerm] = useState('');
-            const [editingClientId, setEditingClientId] = useState(null);
-            const [syncStatus, setSyncStatus] = useState('☁️');
-            const [lastBackup, setLastBackup] = useState(null);
-            const [autoBackupEnabled, setAutoBackupEnabled] = useState(true);
-            const [newClient, setNewClient] = useState({ nom: '', prenom: '', telephone: '', email: '' });
+  <div class="tabs" role="group" aria-label="Outils">
+    <button class="tab on" aria-pressed="true" onclick="sw('marge',this)">📊 Calculateur<br>de marge</button>
+    <button class="tab" aria-pressed="false" onclick="sw('calc',this)">🧮 Calculatrice<br>pro</button>
+  </div>
 
-            // Chargement des données
-            useEffect(() => {
-                const unsubscribe = db.collection('clients').onSnapshot((snapshot) => {
-                    const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-                    setClients(data.sort((a, b) => new Date(b.dateCreation) - new Date(a.dateCreation)));
-                    setSyncStatus('☁️ Sync');
-                });
-                
-                // Charger la date de dernière sauvegarde
-                const savedBackupDate = localStorage.getItem('lastBackupDate');
-                if (savedBackupDate) {
-                    setLastBackup(new Date(savedBackupDate));
-                }
-                
-                return () => unsubscribe();
-            }, []);
+  <div class="content">
 
-            // Sauvegarde automatique toutes les 24h
-            useEffect(() => {
-                if (!autoBackupEnabled || clients.length === 0) return;
+    <!-- MARGE -->
+    <div id="marge" class="pane on">
+      <p class="hint">Saisis le prix d’achat et l’un des quatre critères. Le dernier critère modifié (encadré en violet) reste la référence du calcul.</p>
+      <div class="grp"><label for="pa">Prix d'achat NET HT (€)</label><input type="text" id="pa" inputmode="decimal" autocomplete="off" placeholder="80.00"></div>
+      <div class="grp"><label for="mg">Taux de marque souhaité (%)</label><input type="text" id="mg" inputmode="decimal" autocomplete="off" placeholder="33.33"></div>
+      <div class="grp"><label for="co">Coefficient multiplicateur HT</label><input type="text" id="co" inputmode="decimal" autocomplete="off" placeholder="1.50"></div>
+      <div class="sep"><span>OU</span></div>
+      <div class="grp"><label for="pvHT">Prix de vente HT (€)</label><input type="text" id="pvHT" inputmode="decimal" autocomplete="off" placeholder="120.00"></div>
+      <div class="grp"><label for="pvTTC">Prix de vente TTC (€)</label><input type="text" id="pvTTC" inputmode="decimal" autocomplete="off" placeholder="144.00"></div>
+      <div class="grp">
+        <label id="tvaLabel">TVA</label>
+        <div class="tva-row" role="group" aria-labelledby="tvaLabel">
+          <button class="tva-btn on" aria-pressed="true" data-t="20">20 %</button>
+          <button class="tva-btn" aria-pressed="false" data-t="10">10 %</button>
+          <button class="tva-btn" aria-pressed="false" data-t="5.5">5,5 %</button>
+        </div>
+      </div>
+      <div class="status" id="status" role="status"></div>
+      <div class="results" id="res" aria-live="polite">
+        <div class="r-row"><span class="r-lbl">Prix de vente HT</span><span class="r-val" id="rHT"></span></div>
+        <div class="r-row"><span class="r-lbl">Prix de vente TTC</span><span class="r-val" id="rTTC"></span></div>
+        <div class="r-row"><span class="r-lbl">Marge brute</span><span class="r-val" id="rBrute"></span></div>
+        <div class="r-hl"><div class="r-row"><span class="r-lbl">📊 Taux de marque</span><span class="r-val" id="rPct"></span></div></div>
+        <div class="r-row"><span class="r-lbl">✖ Coefficient HT</span><span class="r-val" id="rCoeff"></span></div>
+        <div class="r-row"><span class="r-lbl">Taux de marge</span><span class="r-val" id="rMarge"></span></div>
+      </div>
+      <button class="reset" onclick="resetMarge()">Réinitialiser les valeurs</button>
+    </div>
 
-                const checkAutoBackup = () => {
-                    const now = new Date();
-                    if (!lastBackup || (now - lastBackup) > 24 * 60 * 60 * 1000) {
-                        handleAutoBackup();
-                    }
-                };
+    <!-- CALCULATRICE -->
+    <div id="calc" class="pane">
+      <div class="cdisp">
+        <div class="cexpr" id="cExpr">&nbsp;</div>
+        <div class="cscr" id="cScr" role="status" aria-live="polite">0</div>
+      </div>
+      <div class="cmrow">
+        <button class="cm" onclick="mS()">MS</button>
+        <button class="cm" id="mBtn" aria-pressed="false" onclick="mR()">MR</button>
+        <button class="cm" onclick="mA()">M+</button>
+        <button class="cm" onclick="mSb()">M−</button>
+        <button class="cm" onclick="mC()">MC</button>
+      </div>
+      <div class="cbgrid">
+        <button class="cb cbc" onclick="cClr()">C</button>
+        <button class="cb cbf" onclick="cSign()">+/−</button>
+        <button class="cb cbf" onclick="cPct()">%</button>
+        <button class="cb cbo" onclick="cOp('/')">÷</button>
+        <button class="cb cbn" onclick="cN('7')">7</button>
+        <button class="cb cbn" onclick="cN('8')">8</button>
+        <button class="cb cbn" onclick="cN('9')">9</button>
+        <button class="cb cbo" onclick="cOp('*')">×</button>
+        <button class="cb cbn" onclick="cN('4')">4</button>
+        <button class="cb cbn" onclick="cN('5')">5</button>
+        <button class="cb cbn" onclick="cN('6')">6</button>
+        <button class="cb cbo" onclick="cOp('-')">−</button>
+        <button class="cb cbn" onclick="cN('1')">1</button>
+        <button class="cb cbn" onclick="cN('2')">2</button>
+        <button class="cb cbn" onclick="cN('3')">3</button>
+        <button class="cb cbo" onclick="cOp('+')">+</button>
+        <button class="cb cbn cs2" onclick="cN('0')">0</button>
+        <button class="cb cbn" onclick="cDot()">,</button>
+        <button class="cb cbeq" onclick="cEq()">=</button>
+        <button class="cb cbf" onclick="cSqrt()">√</button>
+        <button class="cb cbf" onclick="cSq()">x²</button>
+        <button class="cb cbf" onclick="cInv()">1/x</button>
+        <button class="cb cbf" onclick="cBack()">⌫</button>
+      </div>
+      <div class="chist" id="chist">
+        <div class="chtitle">Historique</div>
+        <div id="chistList"></div>
+      </div>
+    </div>
 
-                // Vérifier au chargement et toutes les heures
-                checkAutoBackup();
-                const interval = setInterval(checkAutoBackup, 60 * 60 * 1000);
-                return () => clearInterval(interval);
-            }, [clients, lastBackup, autoBackupEnabled]);
+  </div><!-- .content -->
+</div><!-- .app -->
 
-            const saveClient = async (client) => {
-                await db.collection('clients').doc(client.id).set(client);
-            };
-
-            const handleAutoBackup = () => {
-                const backup = {
-                    version: '1.0',
-                    dateExport: new Date().toISOString(),
-                    clients: clients,
-                    stats: {
-                        totalClients: clients.length,
-                        totalCartes: clients.reduce((s, c) => s + (c.cartes?.length || 0), 0),
-                        totalPoses: clients.reduce((s, c) => s + c.cartes?.reduce((x, carte) => x + carte.poses.filter(p => p).length, 0) || 0, 0)
-                    }
-                };
-
-                localStorage.setItem('autoBackup', JSON.stringify(backup));
-                localStorage.setItem('lastBackupDate', new Date().toISOString());
-                setLastBackup(new Date());
-            };
-
-            const handleExport = () => {
-                const backup = {
-                    version: '1.0',
-                    dateExport: new Date().toISOString(),
-                    clients: clients,
-                    stats: {
-                        totalClients: clients.length,
-                        totalCartes: clients.reduce((s, c) => s + (c.cartes?.length || 0), 0),
-                        totalPoses: clients.reduce((s, c) => s + c.cartes?.reduce((x, carte) => x + carte.poses.filter(p => p).length, 0) || 0, 0)
-                    }
-                };
-
-                const json = JSON.stringify(backup, null, 2);
-                const blob = new Blob([json], { type: 'application/json' });
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = `cordage-backup-${new Date().toISOString().split('T')[0]}.json`;
-                a.click();
-                
-                // Mettre à jour la date de sauvegarde
-                localStorage.setItem('lastBackupDate', new Date().toISOString());
-                setLastBackup(new Date());
-                
-                alert(`✅ Sauvegarde réussie !\n\n📊 Statistiques :\n• ${backup.stats.totalClients} clients\n• ${backup.stats.totalCartes} cartes\n• ${backup.stats.totalPoses} poses`);
-            };
-
-            const handleImport = (e) => {
-                const file = e.target.files[0];
-                if (!file) return;
-                const reader = new FileReader();
-                reader.onload = async (ev) => {
-                    try {
-                        const backup = JSON.parse(ev.target.result);
-                        
-                        // Vérifier la structure
-                        if (!backup.clients || !Array.isArray(backup.clients)) {
-                            alert('❌ Format de fichier invalide');
-                            return;
-                        }
-
-                        const stats = backup.stats || {
-                            totalClients: backup.clients.length,
-                            totalCartes: backup.clients.reduce((s, c) => s + (c.cartes?.length || 0), 0),
-                            totalPoses: backup.clients.reduce((s, c) => s + c.cartes?.reduce((x, carte) => x + carte.poses.filter(p => p).length, 0) || 0, 0)
-                        };
-
-                        const confirmMsg = `Restaurer cette sauvegarde ?\n\n📊 Contenu :\n• ${stats.totalClients} clients\n• ${stats.totalCartes} cartes\n• ${stats.totalPoses} poses\n\n⚠️ Les données actuelles seront remplacées`;
-                        
-                        if (confirm(confirmMsg)) {
-                            // Supprimer toutes les données actuelles
-                            const currentClients = await db.collection('clients').get();
-                            const batch = db.batch();
-                            currentClients.forEach(doc => batch.delete(doc.ref));
-                            await batch.commit();
-
-                            // Restaurer les données
-                            for (const client of backup.clients) {
-                                await db.collection('clients').doc(client.id).set(client);
-                            }
-                            
-                            alert('✅ Restauration réussie !');
-                        }
-                    } catch (error) {
-                        console.error(error);
-                        alert('❌ Erreur lors de la restauration');
-                    }
-                };
-                reader.readAsText(file);
-                e.target.value = ''; // Reset input
-            };
-
-            const addClient = async () => {
-                if (!newClient.nom || !newClient.prenom) return alert('Nom et prénom requis');
-                await saveClient({ 
-                    id: Date.now().toString(), 
-                    ...newClient, 
-                    cartes: [], 
-                    dateCreation: new Date().toISOString() 
-                });
-                setNewClient({ nom: '', prenom: '', telephone: '', email: '' });
-                setShowAddForm(false);
-            };
-
-            const togglePose = async (cid, ci, pi) => {
-                const client = clients.find(c => c.id === cid);
-                const updated = { ...client };
-                if (updated.cartes[ci].poses[pi]) {
-                    updated.cartes[ci].poses[pi] = null;
-                } else {
-                    updated.cartes[ci].poses[pi] = { 
-                        date: new Date().toISOString(), 
-                        cordage: '', 
-                        tension: '' 
-                    };
-                    const used = updated.cartes[ci].poses.filter(p => p).length;
-                    if (10 - used === 3) alert(`⚠️ Il reste 3 poses`);
-                    if (used === 10) alert('✅ Carte complète !');
-                }
-                await saveClient(updated);
-            };
-
-            const addCarte = async (cid, sport) => {
-                const c = clients.find(x => x.id === cid);
-                await saveClient({ 
-                    ...c, 
-                    cartes: [...(c.cartes || []), { 
-                        id: Date.now().toString(), 
-                        sport, 
-                        dateAchat: new Date().toISOString(), 
-                        poses: Array(10).fill(null) 
-                    }] 
-                });
-            };
-
-            const delClient = async (cid) => {
-                if (confirm('⚠️ Supprimer ce client et toutes ses cartes ?')) {
-                    await db.collection('clients').doc(cid).delete();
-                }
-            };
-
-            const delCarte = async (cid, ci) => {
-                if (confirm('⚠️ Supprimer cette carte ?')) {
-                    const c = clients.find(x => x.id === cid);
-                    await saveClient({ ...c, cartes: c.cartes.filter((_, i) => i !== ci) });
-                }
-            };
-
-            const updatePose = async (cid, ci, pi, field, val) => {
-                const c = clients.find(x => x.id === cid);
-                const u = { ...c };
-                if (u.cartes[ci].poses[pi]) {
-                    u.cartes[ci].poses[pi][field] = val;
-                    await saveClient(u);
-                }
-            };
-
-            const filtered = clients.filter(c => {
-                const s = searchTerm.toLowerCase();
-                return c.nom.toLowerCase().includes(s) || 
-                       c.prenom.toLowerCase().includes(s) || 
-                       (c.telephone?.includes(s)) || 
-                       (c.email?.toLowerCase().includes(s));
-            });
-
-            const formatDate = (date) => {
-                if (!date) return 'Jamais';
-                const d = new Date(date);
-                const now = new Date();
-                const diff = now - d;
-                const hours = Math.floor(diff / (1000 * 60 * 60));
-                
-                if (hours < 1) return 'Il y a moins d\'1h';
-                if (hours < 24) return `Il y a ${hours}h`;
-                const days = Math.floor(hours / 24);
-                if (days === 1) return 'Hier';
-                if (days < 7) return `Il y a ${days} jours`;
-                return d.toLocaleDateString('fr-FR');
-            };
-
-            return (
-                <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-4">
-                    <div className="max-w-7xl mx-auto">
-                        <div className="bg-white rounded-xl shadow-xl p-6 mb-6">
-                            <div className="flex flex-col gap-4">
-                                <div className="flex justify-between items-center">
-                                    <h1 className="text-3xl font-bold">Cartes Cordage Pro</h1>
-                                    <span className="bg-green-100 text-green-700 px-3 py-1 rounded text-sm">{syncStatus}</span>
-                                </div>
-                                
-                                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                                    <div className="flex justify-between items-center mb-2">
-                                        <h3 className="font-semibold text-blue-900">💾 Sauvegarde automatique</h3>
-                                        <label className="flex items-center gap-2 cursor-pointer">
-                                            <input 
-                                                type="checkbox" 
-                                                checked={autoBackupEnabled}
-                                                onChange={(e) => setAutoBackupEnabled(e.target.checked)}
-                                                className="w-4 h-4"
-                                            />
-                                            <span className="text-sm">Activée</span>
-                                        </label>
-                                    </div>
-                                    <p className="text-sm text-gray-600">
-                                        Dernière sauvegarde : {formatDate(lastBackup)}
-                                    </p>
-                                </div>
-
-                                <div className="flex gap-2 flex-wrap">
-                                    <button onClick={handleExport} className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded transition">
-                                        💾 Exporter
-                                    </button>
-                                    <label className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded cursor-pointer transition">
-                                        📤 Importer
-                                        <input type="file" accept=".json" onChange={handleImport} className="hidden" />
-                                    </label>
-                                    <button onClick={() => setShowAddForm(!showAddForm)} className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded ml-auto transition">
-                                        + Nouveau Client
-                                    </button>
-                                </div>
-                            </div>
-
-                            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6">
-                                <div className="bg-blue-100 p-4 rounded">
-                                    <p className="text-sm text-gray-600">Clients</p>
-                                    <p className="text-2xl font-bold">{clients.length}</p>
-                                </div>
-                                <div className="bg-green-100 p-4 rounded">
-                                    <p className="text-sm text-gray-600">🎾 Tennis</p>
-                                    <p className="text-2xl font-bold">
-                                        {clients.reduce((s, c) => s + (c.cartes?.filter(x => x.sport === 'tennis').length || 0), 0)}
-                                    </p>
-                                </div>
-                                <div className="bg-orange-100 p-4 rounded">
-                                    <p className="text-sm text-gray-600">🏸 Badminton</p>
-                                    <p className="text-2xl font-bold">
-                                        {clients.reduce((s, c) => s + (c.cartes?.filter(x => x.sport === 'badminton').length || 0), 0)}
-                                    </p>
-                                </div>
-                                <div className="bg-purple-100 p-4 rounded">
-                                    <p className="text-sm text-gray-600">Total Poses</p>
-                                    <p className="text-2xl font-bold">
-                                        {clients.reduce((s, c) => s + (c.cartes?.reduce((x, carte) => x + carte.poses.filter(p => p).length, 0) || 0), 0)}
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className="bg-white rounded-xl shadow p-4 mb-6">
-                            <input 
-                                type="text" 
-                                placeholder="🔍 Rechercher un client..." 
-                                value={searchTerm} 
-                                onChange={(e) => setSearchTerm(e.target.value)} 
-                                className="w-full px-4 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500" 
-                            />
-                        </div>
-
-                        {showAddForm && (
-                            <div className="bg-white rounded-xl shadow-xl p-6 mb-6">
-                                <h2 className="text-xl font-bold mb-4">Nouveau Client</h2>
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                                    <input 
-                                        placeholder="Nom *" 
-                                        value={newClient.nom} 
-                                        onChange={(e) => setNewClient({...newClient, nom: e.target.value})} 
-                                        className="border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" 
-                                    />
-                                    <input 
-                                        placeholder="Prénom *" 
-                                        value={newClient.prenom} 
-                                        onChange={(e) => setNewClient({...newClient, prenom: e.target.value})} 
-                                        className="border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" 
-                                    />
-                                    <input 
-                                        placeholder="Téléphone" 
-                                        value={newClient.telephone} 
-                                        onChange={(e) => setNewClient({...newClient, telephone: e.target.value})} 
-                                        className="border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" 
-                                    />
-                                    <input 
-                                        placeholder="Email" 
-                                        value={newClient.email} 
-                                        onChange={(e) => setNewClient({...newClient, email: e.target.value})} 
-                                        className="border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500" 
-                                    />
-                                </div>
-                                <div className="flex gap-2">
-                                    <button onClick={addClient} className="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded transition">
-                                        ✅ Créer
-                                    </button>
-                                    <button onClick={() => setShowAddForm(false)} className="bg-gray-300 hover:bg-gray-400 px-6 py-2 rounded transition">
-                                        Annuler
-                                    </button>
-                                </div>
-                            </div>
-                        )}
-
-                        <div className="space-y-4">
-                            {filtered.map(client => (
-                                <div key={client.id} className="bg-white rounded-xl shadow-xl p-6">
-                                    <div className="flex justify-between mb-4">
-                                        <div>
-                                            <h3 className="text-xl font-bold">{client.prenom} {client.nom}</h3>
-                                            {client.telephone && <p className="text-sm text-gray-600">📱 {client.telephone}</p>}
-                                            {client.email && <p className="text-sm text-gray-600">📧 {client.email}</p>}
-                                        </div>
-                                        <div className="flex gap-2">
-                                            <button 
-                                                onClick={() => addCarte(client.id, 'tennis')} 
-                                                className="bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded text-sm transition"
-                                                title="Ajouter carte tennis"
-                                            >
-                                                🎾
-                                            </button>
-                                            <button 
-                                                onClick={() => addCarte(client.id, 'badminton')} 
-                                                className="bg-orange-600 hover:bg-orange-700 text-white px-3 py-1 rounded text-sm transition"
-                                                title="Ajouter carte badminton"
-                                            >
-                                                🏸
-                                            </button>
-                                            <button 
-                                                onClick={() => delClient(client.id)} 
-                                                className="bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded text-sm transition"
-                                                title="Supprimer client"
-                                            >
-                                                🗑️
-                                            </button>
-                                        </div>
-                                    </div>
-                                    <div className="space-y-3">
-                                        {client.cartes?.map((carte, ci) => {
-                                            const used = carte.poses.filter(p => p).length;
-                                            const isTennis = carte.sport === 'tennis';
-                                            return (
-                                                <div key={carte.id} className={`border-2 rounded-lg p-4 ${isTennis ? 'bg-green-50 border-green-200' : 'bg-orange-50 border-orange-200'}`}>
-                                                    <div className="flex justify-between mb-3">
-                                                        <div>
-                                                            <span className="font-bold">{isTennis ? '🎾' : '🏸'} Carte #{ci + 1}</span>
-                                                            <p className="text-xs text-gray-500">
-                                                                Créée le {new Date(carte.dateAchat).toLocaleDateString('fr-FR')}
-                                                            </p>
-                                                        </div>
-                                                        <div className="flex gap-2 items-center">
-                                                            <span className="text-sm font-bold bg-white px-2 py-1 rounded">{used}/10</span>
-                                                            <button 
-                                                                onClick={() => delCarte(client.id, ci)} 
-                                                                className="text-red-600 hover:text-red-800 text-sm transition"
-                                                                title="Supprimer carte"
-                                                            >
-                                                                🗑️
-                                                            </button>
-                                                        </div>
-                                                    </div>
-                                                    <div className="grid grid-cols-5 gap-2">
-                                                        {carte.poses.map((pose, pi) => (
-                                                            <div key={pi}>
-                                                                <button 
-                                                                    onClick={() => togglePose(client.id, ci, pi)} 
-                                                                    className={`w-full p-2 rounded text-xs font-semibold transition ${
-                                                                        pose 
-                                                                            ? (isTennis ? 'bg-green-500 hover:bg-green-600' : 'bg-orange-500 hover:bg-orange-600') + ' text-white' 
-                                                                            : 'bg-white border hover:bg-gray-50'
-                                                                    }`}
-                                                                >
-                                                                    {pose ? '✓' : '○'} {pi + 1}
-                                                                </button>
-                                                                {pose && (
-                                                                    <div className="mt-1 space-y-1">
-                                                                        <input 
-                                                                            placeholder="Cordage" 
-                                                                            value={pose.cordage || ''} 
-                                                                            onChange={(e) => updatePose(client.id, ci, pi, 'cordage', e.target.value)} 
-                                                                            className="w-full text-xs border rounded px-1 py-1 focus:outline-none focus:ring-1 focus:ring-blue-500" 
-                                                                        />
-                                                                        <input 
-                                                                            placeholder="Tension" 
-                                                                            value={pose.tension || ''} 
-                                                                            onChange={(e) => updatePose(client.id, ci, pi, 'tension', e.target.value)} 
-                                                                            className="w-full text-xs border rounded px-1 py-1 focus:outline-none focus:ring-1 focus:ring-blue-500" 
-                                                                        />
-                                                                        <p className="text-xs text-gray-500">
-                                                                            {new Date(pose.date).toLocaleDateString('fr-FR')}
-                                                                        </p>
-                                                                    </div>
-                                                                )}
-                                                            </div>
-                                                        ))}
-                                                    </div>
-                                                    {used === 7 && (
-                                                        <div className="mt-2 bg-yellow-100 border border-yellow-400 rounded p-2 text-center text-xs font-semibold">
-                                                            ⚠️ Plus que 3 poses restantes
-                                                        </div>
-                                                    )}
-                                                    {used === 10 && (
-                                                        <div className="mt-2 bg-green-100 border border-green-400 rounded p-2 text-center text-xs font-semibold">
-                                                            ✅ Carte complète !
-                                                        </div>
-                                                    )}
-                                                </div>
-                                            );
-                                        })}
-                                    </div>
-                                </div>
-                            ))}
-                            
-                            {filtered.length === 0 && (
-                                <div className="bg-white rounded-xl shadow p-8 text-center text-gray-500">
-                                    {searchTerm ? '🔍 Aucun client trouvé' : '📝 Aucun client enregistré'}
-                                </div>
-                            )}
-                        </div>
-                    </div>
-                </div>
-            );
-        }
-
-        ReactDOM.render(<App />, document.getElementById('root'));
-    </script>
+<script>
+'use strict';
+const $ = id => document.getElementById(id);
+const all = sel => [...document.querySelectorAll(sel)];
+function sw(id,btn){
+  all('.pane').forEach(p=>p.classList.toggle('on',p.id===id));
+  all('.tab').forEach(b=>{b.classList.toggle('on',b===btn);b.setAttribute('aria-pressed',String(b===btn));});
+  if(document.activeElement && document.activeElement.tagName==='INPUT') document.activeElement.blur();
+}
+// MARGE : le champ saisi est la référence, jamais une valeur dérivée arrondie.
+let tva=20, source=null;
+const criteria=['mg','co','pvHT','pvTTC'];
+const moneyFmt=new Intl.NumberFormat('fr-FR',{minimumFractionDigits:2,maximumFractionDigits:2});
+const f2=n=>moneyFmt.format(n===0?0:n);
+const input2=n=>(n===0?0:n).toFixed(2).replace('.',',');
+function readNumber(id){
+  const v=$(id).value.trim().replace(/\s/g,'');
+  if(!v) return null;
+  if(!/^[+-]?(?:\d+(?:[.,]\d*)?|[.,]\d+)$/.test(v)) return NaN;
+  const n=Number(v.replace(',','.'));
+  return Number.isFinite(n)?n:NaN;
+}
+function clearResults(message='',invalid=[]){
+  $('res').style.display='none';
+  ['rHT','rTTC','rBrute','rPct','rCoeff','rMarge'].forEach(id=>$(id).textContent='');
+  criteria.forEach(id=>{if(id!==source) $(id).value='';});
+  $('status').textContent=message;
+  ['pa',...criteria].forEach(id=>$(id).setAttribute('aria-invalid',String(invalid.includes(id))));
+}
+function recalc(){
+  const pa=readNumber('pa');
+  const v=source===null?null:readNumber(source);
+  criteria.forEach(id=>$(id).closest('.grp').classList.toggle('active',id===source));
+  if(pa===null){clearResults('Saisis le prix d’achat HT.');return;}
+  if(!Number.isFinite(pa)||pa<=0){clearResults('Le prix d’achat doit être supérieur à zéro.',['pa']);return;}
+  if(source===null||v===null){clearResults('Saisis un taux, un coefficient ou un prix de vente.');return;}
+  if(!Number.isFinite(v)){clearResults('Saisis un nombre valide (virgule ou point).',[source]);return;}
+  if(source==='mg'&&v>=100){clearResults('Le taux de marque doit être inférieur à 100 %.',[source]);return;}
+  if(source!=='mg'&&v<=0){clearResults('Le prix de vente ou le coefficient doit être supérieur à zéro.',[source]);return;}
+  const factor=1+tva/100;
+  let pv,ttc;
+  switch(source){
+    case 'mg': pv=pa/(1-v/100); break;
+    case 'co': pv=pa*v; break;
+    case 'pvHT': pv=v; break;
+    case 'pvTTC': pv=v/factor;ttc=v;break;
+  }
+  if(ttc===undefined) ttc=pv*factor;
+  const mb=pv-pa, marque=source==='mg'?v:mb/pv*100, marge=mb/pa*100, coeff=source==='co'?v:pv/pa;
+  if(pv<=0||![pv,ttc,mb,marque,marge,coeff].every(Number.isFinite)||[pv,ttc,Math.abs(mb),Math.abs(marque),Math.abs(marge),coeff].some(n=>n>=1e15)){
+    clearResults('Valeurs hors des limites de calcul.',[source]);return;
+  }
+  const values={pvHT:pv,pvTTC:ttc,mg:marque,co:coeff};
+  criteria.forEach(id=>{if(id!==source) $(id).value=input2(values[id]);});
+  $('rHT').textContent=f2(pv)+' €';
+  $('rTTC').textContent=f2(ttc)+' €';
+  $('rBrute').textContent=f2(mb)+' €';
+  $('rPct').textContent=f2(marque)+' %';
+  $('rCoeff').textContent='×'+f2(coeff);
+  $('rMarge').textContent=f2(marge)+' %';
+  ['pa',...criteria].forEach(id=>$(id).setAttribute('aria-invalid','false'));
+  $('status').textContent=mb<0?'Attention : vente à perte (prix HT inférieur au prix d’achat).':'';
+  $('res').style.display='block';
+}
+$('pa').addEventListener('input',recalc);
+criteria.forEach(id=>$(id).addEventListener('input',()=>{source=id;recalc();}));
+function setTVA(value){
+  tva=value;
+  all('.tva-btn').forEach(b=>{const on=Number(b.dataset.t)===tva;b.classList.toggle('on',on);b.setAttribute('aria-pressed',String(on));});
+  recalc();
+}
+all('.tva-btn').forEach(b=>b.addEventListener('click',()=>setTVA(Number(b.dataset.t))));
+function resetMarge(){
+  source=null;
+  ['pa',...criteria].forEach(id=>$(id).value='');
+  setTVA(20);$('status').textContent='';
+}
+// CALCULATRICE : exécution séquentielle, comme une calculatrice de poche.
+let cv='0',cop=null,cprev=null,cnew=true,entered=false,cmem=0,hasMem=false,chist=[],repeat=null;
+const symbols={'+':'+','-':'−','*':'×','/':'÷'};
+function scr(){$('cScr').textContent=cv.replace('.',',');}
+function expr(s){$('cExpr').textContent=s;}
+function fmt(n){return Number.isFinite(n)?Number(n.toPrecision(15)).toString():'Erreur';}
+function shown(n){return fmt(n).replace('.',',');}
+function applyOp(a,b,op){switch(op){case '+':return a+b;case '-':return a-b;case '*':return a*b;case '/':return b===0?NaN:a/b;default:return NaN;}}
+function fail(){cv='Erreur';cop=null;cprev=null;cnew=true;entered=false;repeat=null;expr('Calcul impossible');scr();}
+function beginEntry(){if(cv==='Erreur') cClr();if(cnew){if(cop===null){expr('');repeat=null;}cv='0';cnew=false;}entered=true;}
+function cN(n){beginEntry();if(cv.replace(/[^0-9]/g,'').length>=15)return;if(cv==='0')cv=n;else if(cv==='-0')cv='-'+n;else cv+=n;scr();}
+function cDot(){beginEntry();if(!cv.includes('.'))cv+='.';scr();}
+function cOp(op){
+  if(cv==='Erreur')return;
+  if(cop!==null && entered){const result=applyOp(cprev,Number(cv),cop);if(!Number.isFinite(result)){fail();return;}cv=fmt(result);cprev=Number(cv);}
+  else if(cop===null)cprev=Number(cv);
+  cop=op;cnew=true;entered=false;repeat=null;
+  cv=fmt(cprev);scr();expr(shown(cprev)+' '+symbols[op]);
+}
+function cEq(){
+  if(cv==='Erreur')return;
+  let a,b,op;
+  if(cop!==null){if(!entered)return;a=cprev;b=Number(cv);op=cop;}
+  else if(repeat){a=Number(cv);b=repeat.b;op=repeat.op;}
+  else return;
+  const e=shown(a)+' '+symbols[op]+' '+shown(b), r=applyOp(a,b,op);
+  if(!Number.isFinite(r)){fail();return;}
+  cv=fmt(r);chist.unshift({e,r:shown(r)});if(chist.length>10)chist.pop();renderHist();
+  expr(e+' =');scr();repeat={op,b};cprev=null;cop=null;cnew=true;entered=false;
+}
+function cClr(){cv='0';cop=null;cprev=null;cnew=true;entered=false;repeat=null;expr('');scr();}
+function cBack(){if(cnew||cv==='Erreur')return;cv=cv.slice(0,-1);if(!cv||cv==='-')cv='0';scr();}
+function unary(fn){
+  if(cv==='Erreur'||(cop!==null&&!entered))return;
+  if(cop===null)expr('');
+  const v=fn(Number(cv));if(!Number.isFinite(v)){fail();return;}
+  cv=fmt(v);entered=true;cnew=true;repeat=null;scr();
+}
+function cSign(){
+  if(cv==='Erreur')return;
+  if(cop!==null&&!entered){cv='-0';cnew=false;entered=true;scr();return;}
+  if(cnew&&cop===null){expr('');repeat=null;}
+  cv=cv.startsWith('-')?cv.slice(1):'-'+cv;entered=true;scr();
+}
+function cPct(){
+  if(cv==='Erreur'||(cop!==null&&!entered))return;
+  unary(v=>(cop==='+'||cop==='-')?cprev*(v/100):v/100);
+}
+function cSqrt(){unary(v=>v>=0?Math.sqrt(v):NaN);}
+function cSq(){unary(v=>v*v);}
+function cInv(){unary(v=>v===0?NaN:1/v);}
+function updateMem(){const b=$('mBtn');b.classList.toggle('on',hasMem);b.setAttribute('aria-pressed',String(hasMem));}
+function memorySet(v){if(!Number.isFinite(v))return;cmem=v;hasMem=true;updateMem();}
+function mS(){if(cv!=='Erreur')memorySet(Number(cv));}
+function mR(){if(hasMem){if(cv==='Erreur')cClr();if(cop===null)expr('');cv=fmt(cmem);entered=true;cnew=true;repeat=null;scr();}}
+function mA(){if(cv!=='Erreur')memorySet(cmem+Number(cv));}
+function mSb(){if(cv!=='Erreur')memorySet(cmem-Number(cv));}
+function mC(){cmem=0;hasMem=false;updateMem();}
+function renderHist(){
+  $('chist').style.display=chist.length?'block':'none';
+  $('chistList').replaceChildren(...chist.map(h=>{const row=document.createElement('div');row.className='chitem';const e=document.createElement('span'),r=document.createElement('b');e.textContent=h.e;r.textContent=h.r;row.append(e,r);return row;}));
+}
+document.addEventListener('keydown',e=>{
+  if(!$('calc').classList.contains('on')||e.ctrlKey||e.metaKey||e.altKey||e.target.matches('input,textarea,[contenteditable]'))return;
+  let action=null;
+  if(/^[0-9]$/.test(e.key))action=()=>cN(e.key);
+  else if(e.key==='.'||e.key===',')action=cDot;
+  else if(['+','-','*','/'].includes(e.key))action=()=>cOp(e.key);
+  else if(e.key==='Enter'||e.key==='=')action=cEq;
+  else if(e.key==='Escape'||e.key==='Delete')action=cClr;
+  else if(e.key==='Backspace')action=cBack;
+  else if(e.key==='%')action=cPct;
+  if(action){e.preventDefault();action();}
+});
+</script>
 </body>
 </html>
